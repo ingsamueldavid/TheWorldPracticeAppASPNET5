@@ -11,6 +11,7 @@
     <link href="~/lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
     <link href="~/lib/bootstrap/dist/css/bootstrap.css.map" rel="stylesheet" />
     <link href="~/lib/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="~/lib/bootswatch/yeti/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="~/css/site.css" />
 
 </head>
@@ -20,18 +21,39 @@
     <div id="sidebar">
         <img src="~/img/user1.jpg" alt="headshot" class="headshot" />
         <span id="username">Sam Hastings</span>
-        <ul class="menu">
+        <ul class="nav">
             <li class="active"><a asp-controller="App" asp-action="Index">Home</a></li>
             <li><a asp-controller="App" asp-action="About">About</a></li>
             <li><a asp-controller="App" asp-action="Contact">Contact</a></li>
         </ul>
+
+
+
+
     </div>
 
     <div id="wrapper">
-        <div id="main">
-            <div>
-                <button id="sidebarToggle" class="btn btn-primary btn-sm"><i class="fa fa-angle-left"> </i></button>
+        <nav class="navbar navbar-inverse">
+            <div class="container-fluid">
+                <ul class="nav navbar-nav navbar-left">
+                    <li>
+                        <button id="sidebarToggle" class="btn btn-primary btn-sm"><i class="fa fa-angle-left"> </i></button>
+
+                    </li>
+
+                </ul>
+                <a asp-controller="App" asp-action="Index" class="navbar-brand">The world</a>
+                <ul class="nav navbar-nav navbar-right">
+
+
+                </ul>
+
             </div>
+
+
+        </nav>
+        <div id="main" class="container-fluid">
+
 
             <div>
 
@@ -42,15 +64,19 @@
 
 
         </div>
-        <div id="footer">
-            <p class="text-primary"> &copy; 2015 The Samy Corporation Ltd.</p>
+        <div id="footer" class="container-fluid">
+            <div class="navbar navbar-inverse navbar-fixed-bottom">
+
+                <h4 class="text-center text-info"> &copy; 2015 The Samy Corporation Ltd.</h4>
+            </div>
+            
         </div>
     </div>
 
     <script type="text/javascript" src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
     <script type="text/javascript" src="~/js/site.js"></script>
-    @RenderSection("Scripts",false)
+    @RenderSection("Scripts", false)
 </body>
 
 </html>
