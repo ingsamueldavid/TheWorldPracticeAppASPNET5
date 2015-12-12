@@ -2,7 +2,9 @@
 using Microsoft.AspNet.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.PlatformAbstractions;
+using TheWorldPracticeAppASPNET5.Models;
 
 namespace TheWorldPracticeAppASPNET5
 {
@@ -19,7 +21,10 @@ namespace TheWorldPracticeAppASPNET5
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
-
+            services.AddLogging();
+            services.AddEntityFramework().AddSqlServer().AddDbContext<WorldContext>();
+            services.AddTransient<WorldContextSeedData>();
+            services.AddScoped<IWorldRepository,WorldRepository>();
             services.AddScoped<ImailService, DebugMailService>();
             //if (enviroment.IsDevelopment())
             //{
@@ -31,7 +36,7 @@ namespace TheWorldPracticeAppASPNET5
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app)
+        public void Configure(IApplicationBuilder app, WorldContextSeedData seeder,ILoggerFactory loggerFactory)
         {
             // app.UseIISPlatformHandler();
             //  app.UseStaticFiles();
@@ -40,6 +45,7 @@ namespace TheWorldPracticeAppASPNET5
             //    await context.Response.WriteAsync("Hello World!");
             //});
             //app.UseDefaultFiles();
+            loggerFactory.AddDebug(LogLevel.Warning);
             app.UseIISPlatformHandler();
             app.UseStaticFiles();
             app.UseMvc(config => {
@@ -51,6 +57,8 @@ namespace TheWorldPracticeAppASPNET5
                     );
 
             });
+            seeder.EnsureSeedData();
+
         }
 
         // Entry point for the application.

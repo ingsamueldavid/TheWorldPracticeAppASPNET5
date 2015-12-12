@@ -3,5 +3,9 @@
     "SiteEmailAdress": "MyEmail@hotmail.com"
 
 
-  }	
+  },
+  "Data": {
+    "WorldContextConnection": "Server=(localdb)\\MSSQLLocalDB;Database=TheWorldDb;Trusted_connection=true;"
+
+  }
 }

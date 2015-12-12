@@ -1,5 +1,7 @@
 using Microsoft.AspNet.Mvc;
 using System;
+using System.Linq;
+using TheWorldPracticeAppASPNET5.Models;
 using TheWorldPracticeAppASPNET5.ViewModels;
 
 namespace TheWorldPracticeAppASPNET5.Controllers.Web
@@ -7,29 +9,26 @@ namespace TheWorldPracticeAppASPNET5.Controllers.Web
     public class AppController:Controller
     {
         private ImailService _mailService;
-
-        public AppController(ImailService mailService)
+        private IWorldRepository _repository;
+        public AppController(ImailService mailService,IWorldRepository repository)
         {
             try
             {
                 _mailService = mailService;
+                _repository = repository;
             }
             catch (Exception)
             {
 
                 throw;
             }
-           
-
-
 
         }
 
-
         public IActionResult Index()
         {
-
-            return View();
+            var trips = _repository.GetAllTrips();
+            return View(trips);
         }
 
         public IActionResult About()
