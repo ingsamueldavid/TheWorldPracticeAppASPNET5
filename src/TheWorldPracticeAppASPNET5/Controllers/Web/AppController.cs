@@ -6,6 +6,25 @@ namespace TheWorldPracticeAppASPNET5.Controllers.Web
 {
     public class AppController:Controller
     {
+        private ImailService _mailService;
+
+        public AppController(ImailService mailService)
+        {
+            try
+            {
+                _mailService = mailService;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+           
+
+
+
+        }
+
 
         public IActionResult Index()
         {
@@ -29,7 +48,23 @@ namespace TheWorldPracticeAppASPNET5.Controllers.Web
         [HttpPost]
         public IActionResult Contact(ContactViewModel model)
         {
+            if (ModelState.IsValid)
+            {
 
+                var email = Startup.Configuration["AppSettings:SiteEmailAdress"];
+                if (string.IsNullOrWhiteSpace(email)) {
+                    ModelState.AddModelError("", "Could not send Email, Server Configuration problem");
+                }
+                if (_mailService.SendMail(email, email, $"Contact Page from {model.Name} ({model.Email})", model.Message)) {
+                    ModelState.Clear();
+                    ViewBag.Message = "Mail Sent, Thanks!";
+
+
+                };
+
+            }
+
+           
             return View();
         }
 
