@@ -4,7 +4,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.PlatformAbstractions;
+using Newtonsoft.Json.Serialization;
 using TheWorldPracticeAppASPNET5.Models;
+using TheWorldPracticeAppASPNET5.Services;
+using TheWorldPracticeAppASPNET5.ViewModels;
 
 namespace TheWorldPracticeAppASPNET5
 {
@@ -20,10 +23,14 @@ namespace TheWorldPracticeAppASPNET5
         }
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc();
+            services.AddMvc().AddJsonOptions(option => 
+            {
+                option.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+            });
             services.AddLogging();
             services.AddEntityFramework().AddSqlServer().AddDbContext<WorldContext>();
             services.AddTransient<WorldContextSeedData>();
+            services.AddScoped<CoordService>();
             services.AddScoped<IWorldRepository,WorldRepository>();
             services.AddScoped<ImailService, DebugMailService>();
             //if (enviroment.IsDevelopment())
@@ -48,6 +55,15 @@ namespace TheWorldPracticeAppASPNET5
             loggerFactory.AddDebug(LogLevel.Warning);
             app.UseIISPlatformHandler();
             app.UseStaticFiles();
+
+            AutoMapper.Mapper.Initialize(config =>
+            {
+
+                config.CreateMap<Trip, TripViewModel>().ReverseMap();
+                config.CreateMap<Stop, StopViewModel>().ReverseMap();
+            });
+
+
             app.UseMvc(config => {
                 config.MapRoute(
                     name: "Default",

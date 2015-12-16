@@ -18,6 +18,21 @@ namespace TheWorldPracticeAppASPNET5.Models
             _context = context;
             _logger = logger;
         }
+
+        public void AddStop(string tripName,Stop newStop)
+        {
+           var theTrip = GetTripByName(tripName);
+            newStop.Order = theTrip.Stops.Max(s => s.Order) + 1;
+            theTrip.Stops.Add(newStop);
+            _context.Stops.Add(newStop);
+        }
+
+        public void AddTrip(Trip trip)
+        {
+
+            _context.Add(trip);
+        }
+
         public IEnumerable<Trip> GetAllTrips()
         {
 
@@ -58,6 +73,17 @@ namespace TheWorldPracticeAppASPNET5.Models
 
         }
 
+        public Trip GetTripByName(string tripName)
+        {
+            return _context.Trips.Include(t => t.Stops).Where(trip => trip.Name == tripName).FirstOrDefault();
+        }
 
+        public bool SaveAll()
+        {
+
+           //if rows affected > 0 return true
+
+           return _context.SaveChanges() > 0;
+        }
     }
 }
