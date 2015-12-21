@@ -3,6 +3,7 @@ using System;
 using System.Linq;
 using TheWorldPracticeAppASPNET5.Models;
 using TheWorldPracticeAppASPNET5.ViewModels;
+using Microsoft.AspNet.Authorization;
 
 namespace TheWorldPracticeAppASPNET5.Controllers.Web
 {
@@ -30,6 +31,13 @@ namespace TheWorldPracticeAppASPNET5.Controllers.Web
             var trips = _repository.GetAllTrips();
             return View(trips);
         }
+        [Authorize]
+        public IActionResult Trips()
+        {
+            var trips = _repository.GetAllTrips();
+            return View(trips);
+        }
+
 
         public IActionResult About()
         {

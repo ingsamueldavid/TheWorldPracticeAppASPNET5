@@ -1,9 +1,11 @@
 using System;
+using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.Data.Entity;
+
 
 namespace TheWorldPracticeAppASPNET5.Models
 {
-    public class WorldContext:DbContext
+    public class WorldContext:IdentityDbContext<WorldUser>
     {
         public DbSet<Trip> Trips { get; set; }
         public DbSet<Stop> Stops { get; set; }

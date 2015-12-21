@@ -8,9 +8,10 @@ using TheWorldPracticeAppASPNET5.Models;
 namespace TheWorldPracticeAppASPNET5.Migrations
 {
     [DbContext(typeof(WorldContext))]
-    partial class WorldContextModelSnapshot : ModelSnapshot
+    [Migration("20151220005538_IdentityEntities")]
+    partial class IdentityEntities
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "7.0.0-rc1-16348")

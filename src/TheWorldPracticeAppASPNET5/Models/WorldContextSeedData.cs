@@ -2,18 +2,34 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNet.Identity;
 
 namespace TheWorldPracticeAppASPNET5.Models
 {
     public class WorldContextSeedData
     {
         private WorldContext _context;
-        public WorldContextSeedData(WorldContext context)
+        private UserManager<WorldUser> _userManager;
+
+        public WorldContextSeedData(WorldContext context,UserManager<WorldUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
-        public void EnsureSeedData()
+        public async Task EnsureSeedDataAsync()
         {
+            if(await _userManager.FindByEmailAsync("sam.hasting@theworld.com") == null)
+            {
+                var newUser = new WorldUser()
+                {
+                    UserName = "SamHasting",
+                    Email = "sam.hasting@theworld.com"
+
+                };
+
+             await   _userManager.CreateAsync(newUser, "testpasss");
+            }
+
             if (!_context.Trips.Any())
             {
                 //add new data
@@ -31,7 +47,7 @@ namespace TheWorldPracticeAppASPNET5.Models
             new Stop() {  Name = "Atlanta, GA", Arrival = new DateTime(2014, 8, 23), Latitude = 33.748995, Longitude = -84.387982, Order = 5 },
 
                     },
-                    UserName = ""
+                    UserName = "SamHasting"
 
                 };
                 _context.Trips.Add(usTrip);
@@ -100,7 +116,7 @@ namespace TheWorldPracticeAppASPNET5.Models
             new Stop() { Order = 55, Latitude =  33.748995, Longitude =  -84.387982, Name = "Atlanta, Georgia", Arrival = DateTime.Parse("Jun 17, 2015") },
 
                     },
-                    UserName = ""
+                    UserName = "SamHasting"
 
                 };
 

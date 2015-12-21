@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNet.Builder;
+﻿using Microsoft.AspNet.Authentication.Cookies;
+using Microsoft.AspNet.Builder;
 using Microsoft.AspNet.Hosting;
+using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -33,6 +35,18 @@ namespace TheWorldPracticeAppASPNET5
             services.AddScoped<CoordService>();
             services.AddScoped<IWorldRepository,WorldRepository>();
             services.AddScoped<ImailService, DebugMailService>();
+
+            services.AddIdentity<WorldUser, IdentityRole>(config => {
+                config.User.RequireUniqueEmail = true;
+                config.Password.RequiredLength = 8;
+
+            }).AddEntityFrameworkStores<WorldContext>();
+
+            services.Configure<CookieAuthenticationOptions>(config =>
+            {
+                config.LoginPath = "/Auth/Login";
+
+            });
             //if (enviroment.IsDevelopment())
             //{
             //   
@@ -43,7 +57,7 @@ namespace TheWorldPracticeAppASPNET5
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, WorldContextSeedData seeder,ILoggerFactory loggerFactory)
+        public async void Configure(IApplicationBuilder app, WorldContextSeedData seeder,ILoggerFactory loggerFactory)
         {
             // app.UseIISPlatformHandler();
             //  app.UseStaticFiles();
@@ -55,6 +69,8 @@ namespace TheWorldPracticeAppASPNET5
             loggerFactory.AddDebug(LogLevel.Warning);
             app.UseIISPlatformHandler();
             app.UseStaticFiles();
+            app.UseIdentity();
+
 
             AutoMapper.Mapper.Initialize(config =>
             {
@@ -63,7 +79,7 @@ namespace TheWorldPracticeAppASPNET5
                 config.CreateMap<Stop, StopViewModel>().ReverseMap();
             });
 
-
+           
             app.UseMvc(config => {
                 config.MapRoute(
                     name: "Default",
@@ -73,7 +89,7 @@ namespace TheWorldPracticeAppASPNET5
                     );
 
             });
-            seeder.EnsureSeedData();
+           await seeder.EnsureSeedDataAsync();
 
         }
 
