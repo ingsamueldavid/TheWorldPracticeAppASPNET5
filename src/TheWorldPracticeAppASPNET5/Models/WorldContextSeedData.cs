@@ -27,7 +27,16 @@ namespace TheWorldPracticeAppASPNET5.Models
 
                 };
 
-             await   _userManager.CreateAsync(newUser, "testpasss");
+                try
+                {
+                   var result = await _userManager.CreateAsync(newUser, "P@ssw0rd123");
+                }
+                catch (Exception ee)
+                {
+
+                    throw;
+                }
+         
             }
 
             if (!_context.Trips.Any())

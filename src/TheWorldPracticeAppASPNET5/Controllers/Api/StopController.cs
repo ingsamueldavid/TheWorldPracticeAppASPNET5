@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNet.Mvc;
+﻿using Microsoft.AspNet.Authorization;
+using Microsoft.AspNet.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,8 @@ using TheWorldPracticeAppASPNET5.Services;
 using TheWorldPracticeAppASPNET5.ViewModels;
 
 namespace TheWorldPracticeAppASPNET5.Controllers
-{[Route("api/trips/{tripName}/stops")]
+{   [Authorize]
+    [Route("api/trips/{tripName}/stops")]
     public class StopController:Controller
     {
         private CoordService _coordService;
@@ -38,7 +40,7 @@ namespace TheWorldPracticeAppASPNET5.Controllers
         {
             try
             {
-                var results = _repository.GetTripByName(tripName);
+                var results = _repository.GetTripByName(tripName,User.Identity.Name);
                 if(results == null)
                 {
 
@@ -83,7 +85,7 @@ namespace TheWorldPracticeAppASPNET5.Controllers
                     newStop.Longitude = coordResult.Longitude;
                     newStop.Latitude = coordResult.Latitude;
                     //save to db
-                    _repository.AddStop(tripName,newStop);
+                    _repository.AddStop(tripName,newStop,User.Identity.Name);
 
                     if (_repository.SaveAll())
                     {

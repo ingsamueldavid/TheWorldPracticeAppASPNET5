@@ -1,12 +1,17 @@
 ﻿using Microsoft.AspNet.Authentication.Cookies;
 using Microsoft.AspNet.Builder;
 using Microsoft.AspNet.Hosting;
+using Microsoft.AspNet.Http;
+using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
+using Microsoft.AspNet.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.PlatformAbstractions;
 using Newtonsoft.Json.Serialization;
+using System.Net;
+using System.Threading.Tasks;
 using TheWorldPracticeAppASPNET5.Models;
 using TheWorldPracticeAppASPNET5.Services;
 using TheWorldPracticeAppASPNET5.ViewModels;
@@ -25,7 +30,15 @@ namespace TheWorldPracticeAppASPNET5
         }
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc().AddJsonOptions(option => 
+            services.AddMvc(config=>
+            {
+#if !DEBUG
+
+config.Filters.Add(new RequireHttpsAttribute());
+#endif
+
+
+            }).AddJsonOptions(option => 
             {
                 option.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
             });
@@ -42,11 +55,39 @@ namespace TheWorldPracticeAppASPNET5
 
             }).AddEntityFrameworkStores<WorldContext>();
 
-            services.Configure<CookieAuthenticationOptions>(config =>
-            {
-                config.LoginPath = "/Auth/Login";
+            //services.Configure<CookieAuthenticationOptions>(config =>
+            //{
 
+            //    //config.LoginPath = new PathString("/Account/Perrito");
+            //    opt.Notifications = new CookieAuthenticationNotifications()
+
+            //});
+            services.Configure<IdentityOptions>(options =>
+            {
+                options.Cookies.ApplicationCookie.LoginPath = new PathString("/Auth/Login");
+                options.Cookies.ApplicationCookie.Events = new CookieAuthenticationEvents()
+                {
+
+                    OnRedirectToLogin = ctx =>
+                    {
+                        if(ctx.Request.Path.StartsWithSegments("/api") && ctx.Response.StatusCode==200) {
+                            ctx.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                            return Task.FromResult<object>(null);
+                        }
+                        else
+                        {
+                            ctx.Response.Redirect(ctx.RedirectUri);
+                            return Task.FromResult<object>(null);
+                        }
+
+                    }
+
+
+
+                };
             });
+
+
             //if (enviroment.IsDevelopment())
             //{
             //   

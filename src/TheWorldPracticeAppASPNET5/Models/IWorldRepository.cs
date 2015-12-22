@@ -9,7 +9,8 @@ namespace TheWorldPracticeAppASPNET5.Models
         IEnumerable<Trip> GetAllTripsWithStops();
         void AddTrip(Trip trip);
         bool SaveAll();
-        Trip GetTripByName(string tripName);
-        void AddStop(string tripName, Stop newStop);
+        Trip GetTripByName(string tripName,string username);
+        void AddStop(string tripName, Stop newStop ,string username);
+        IEnumerable<Trip> GetUserTripsWithStops(string name);
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNet.Mvc;
+﻿using Microsoft.AspNet.Authorization;
+using Microsoft.AspNet.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,7 @@ using TheWorldPracticeAppASPNET5.ViewModels;
 
 namespace TheWorldPracticeAppASPNET5.Controllers
 {
+    [Authorize]
     [Route("api/trips")]
     public class TripController : Controller
     {
@@ -34,8 +36,10 @@ namespace TheWorldPracticeAppASPNET5.Controllers
         [HttpGet("")]
         public JsonResult Get()
         {
-            
-            var results = AutoMapper.Mapper.Map<IEnumerable<TripViewModel>>(_repository.GetAllTripsWithStops());
+
+
+            var trips = _repository.GetUserTripsWithStops(User.Identity.Name);
+            var results = AutoMapper.Mapper.Map<IEnumerable<TripViewModel>>(trips);
 
   
             return Json(results);
@@ -49,7 +53,7 @@ namespace TheWorldPracticeAppASPNET5.Controllers
                 {
 
                     var newTrip = AutoMapper.Mapper.Map<Trip>(vm);
-
+                    newTrip.UserName = User.Identity.Name;
                     //save to the database
 
                     _logger.LogInformation("Attempting to save a new trip");
