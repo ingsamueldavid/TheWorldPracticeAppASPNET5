@@ -32,10 +32,10 @@ namespace TheWorldPracticeAppASPNET5
         {
             services.AddMvc(config=>
             {
-#if !DEBUG
+//#if !DEBUG
 
-config.Filters.Add(new RequireHttpsAttribute());
-#endif
+//config.Filters.Add(new RequireHttpsAttribute());
+//#endif
 
 
             }).AddJsonOptions(option => 
@@ -98,7 +98,7 @@ config.Filters.Add(new RequireHttpsAttribute());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public async void Configure(IApplicationBuilder app, WorldContextSeedData seeder,ILoggerFactory loggerFactory)
+        public async void Configure(IApplicationBuilder app, WorldContextSeedData seeder,ILoggerFactory loggerFactory,IHostingEnvironment env)
         {
             // app.UseIISPlatformHandler();
             //  app.UseStaticFiles();
@@ -107,7 +107,17 @@ config.Filters.Add(new RequireHttpsAttribute());
             //    await context.Response.WriteAsync("Hello World!");
             //});
             //app.UseDefaultFiles();
-            loggerFactory.AddDebug(LogLevel.Warning);
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+                loggerFactory.AddDebug(LogLevel.Information);
+            }
+            else
+            {
+                loggerFactory.AddDebug(LogLevel.Debug);
+            }
+
+       
             app.UseIISPlatformHandler();
             app.UseStaticFiles();
             app.UseIdentity();

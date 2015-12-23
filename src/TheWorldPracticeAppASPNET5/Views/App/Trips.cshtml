@@ -11,10 +11,25 @@
 <script src="~/lib/travelmap/travelmap.min.js"></script>
  <script src="http://maps.google.com/maps/api/js?sensor=true"></script>
 <script src="~/lib/gmaps/gmaps.min.js"></script>
-<script src="~/js/simplecontrols.js"></script>
-<script src="~/js/app-trips.js"></script>
-<script src="~/js/tripseditorcontroller.js"></script>
-<script src="~/js/tripscontroller.js"></script>
+<environment names="Development">
+
+    <script src="~/js/simplecontrols.js"></script>
+    <script src="~/js/app-trips.js"></script>
+    <script src="~/js/tripseditorcontroller.js"></script>
+    <script src="~/js/tripscontroller.js"></script>
+
+    </environment>
+
+<environment names="Production,Staging">
+
+    <script src="~/lib/_app/simpleControls.js"></script>
+    <script src="~/lib/_app/app-trips.js"></script>
+    <script src="~/lib/_app/tripseditorcontroller.js"></script>
+    <script src="~/lib/_app/tripscontroller.js"></script>
+
+</environment>
+
+
 }
 
 <div class="row" ng-app="app-trips">
