@@ -34,8 +34,8 @@ namespace TheWorldPracticeAppASPNET5.Controllers.Web
         [Authorize]
         public IActionResult Trips()
         {
-            var trips = _repository.GetAllTrips();
-            return View(trips);
+          
+            return View();
         }
 
 
